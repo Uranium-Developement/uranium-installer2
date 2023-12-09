@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="uranium-installerv2.main:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/uranium_installerv2_main_jar</output-path>
+    <root id="archive" name="uranium-installerv2.main.jar">
+      <element id="module-output" name="uranium-installerv2.main" />
+    </root>
+  </artifact>
+</component>
