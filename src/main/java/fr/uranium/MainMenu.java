@@ -1,68 +1,101 @@
 package fr.uranium;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.image.BufferedImage;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URL;
 
 public class MainMenu {
     private JPanel mainPanel;
-    private JButton button1;
+    private JButton installButton;
     private JLabel uraniumLogoLabel;
-    private JCheckBox versionLite;
-    BufferedImage uraniumLogo = ImageIO.read(new URL("https://cdn.discordapp.com/attachments/1150326378743463987/1183062569678807191/imageLauncher.png"));
-    ImageIcon uraniumLogoIcon = new ImageIcon(uraniumLogo);
+    private JButton updateButton;
+    private JLabel loadingLabel;
 
-
-    public MainMenu() throws IOException, UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        // Initialisez votre mainPanel ici
+    public MainMenu() throws IOException {
+        // Initialisation du mainPanel ici
         mainPanel = new JPanel();
-        button1 = new JButton("Installer Uranium sur le launcher minecraft");
-        JLabel uraniumLogoLabel = new JLabel(uraniumLogoIcon);
-        versionLite = new JCheckBox("installer la version lite");
-        // Ajoutez d'autres composants à mainPanel si nécessaire
-        JFrame.setDefaultLookAndFeelDecorated(true);
-
-
-
-
-
-        mainPanel.setPreferredSize(new Dimension(730,600));
-        mainPanel.setLayout (null);
-        UIManager.put("", new Color(51, 51, 72));
+        installButton = new JButton("Installer Uranium sur le launcher minecraft");
+        JLabel uraniumLogoLabel = new JLabel(new ImageIcon(new URL("https://cdn.discordapp.com/attachments/1150326378743463987/1183062569678807191/imageLauncher.png")));
+        updateButton = new JButton("mettre a jour Uranium");
+        loadingLabel = new JLabel("");
+        mainPanel.setPreferredSize(new Dimension(730, 600));
+        mainPanel.setLayout(null);
 
         mainPanel.add(uraniumLogoLabel);
-        mainPanel.add(button1);
-        mainPanel.add(versionLite);
-        mainPanel.setBackground(new Color(66,69,73));
-        button1.setBackground(new Color(35,39,42));
-        versionLite.setBackground(new Color(35,39,42));
-        versionLite.setForeground(new Color(255, 255, 255));
-        button1.setForeground(new Color(255, 255, 255));
-        System.out.println(javax.swing.UIManager.getDefaults().getFont("Label.font"));
-        uraniumLogoLabel.setBounds (0, 0, 740, 416);
-        versionLite.setBounds      (280, 460, 150, 30);
-        button1.setBounds          (210, 520, 290, 30);
-        versionLite.addItemListener(new ItemListener() {
+        mainPanel.add(loadingLabel);
+        mainPanel.add(installButton);
+        mainPanel.add(updateButton);
+        mainPanel.setBackground(new Color(66, 69, 73));
+        installButton.setBackground(new Color(35, 39, 42));
+        updateButton.setBackground(new Color(35, 39, 42));
+        updateButton.setForeground(new Color(255, 255, 255));
+        installButton.setForeground(new Color(255, 255, 255));
+        loadingLabel.setForeground(new Color(255, 255, 255));
+
+        uraniumLogoLabel.setBounds(0, 0, 740, 416);
+        updateButton.setBounds(270, 400, 160, 30);
+        installButton.setBounds(210, 460, 290, 30);
+        loadingLabel.setBounds(240, 520, 290, 30);
+        loadingLabel.setFont(new Font(loadingLabel.getFont().getName(), Font.PLAIN, 20));
+
+        updateButton.addActionListener(new ActionListener() {
             @Override
-            public void itemStateChanged(ItemEvent e) {
-                // Vérifiez si la case à cocher est cochée
-                if (e.getStateChange() == ItemEvent.SELECTED) {
-                    // Exécutez l'action liée à la version Lite
-                    versionLite.setBackground(new Color(57, 175, 88));
+            public void actionPerformed(ActionEvent e) {
+                updateButton.setBackground(new Color(57, 175, 88));
+                SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+                    @Override
+                    protected Void doInBackground() throws Exception {
+                        // Tâche de téléchargement
+                        loadingLabel.setText("DOWNLOADING ...");
+                        updateButton.setEnabled(false);
+                        installButton.setEnabled(false);
+                        downloadZip.main();
+                        return null;
+                    }
 
-                } else if (e.getStateChange() == ItemEvent.DESELECTED) {
-                    versionLite.setBackground(new Color(35,39,42));
+                    @Override
+                    protected void done() {
+                        JFrame thisFrame = (JFrame) SwingUtilities.getWindowAncestor(updateButton);
+                        if (thisFrame != null) {
+                            thisFrame.dispose();
+                        }
+                    }
+                };
+                worker.execute();
+            }
+        });
 
-                }
+        installButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                installButton.setBackground(new Color(57, 175, 88));
+                SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+                    @Override
+                    protected Void doInBackground() throws Exception {
+                        // Tâche de téléchargement
+                        loadingLabel.setText("DOWNLOADING ...");
+                        installButton.setEnabled(false);
+                        updateButton.setEnabled(false);
+                        addToLauncherProfile.main();
+                        downloadZip.main();
+                        return null;
+                    }
+
+                    @Override
+                    protected void done() {
+                        JFrame thisFrame = (JFrame) SwingUtilities.getWindowAncestor(installButton);
+                        if (thisFrame != null) {
+                            thisFrame.dispose();
+                        }
+                    }
+                };
+                worker.execute();
             }
         });
     }
-
 
     public static void main() {
         try {
