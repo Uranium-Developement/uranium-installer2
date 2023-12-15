@@ -16,31 +16,35 @@ public class MainMenu {
 
     public MainMenu() throws IOException {
         // Initialisation du mainPanel ici
+        //creation des elements
         mainPanel = new JPanel();
         installButton = new JButton("Installer Uranium sur le launcher minecraft");
         JLabel uraniumLogoLabel = new JLabel(new ImageIcon(new URL("https://cdn.discordapp.com/attachments/1150326378743463987/1183062569678807191/imageLauncher.png")));
         updateButton = new JButton("mettre a jour Uranium");
         loadingLabel = new JLabel("");
+        //taille fenetre
         mainPanel.setPreferredSize(new Dimension(730, 600));
         mainPanel.setLayout(null);
-
+        //ajout des elements au panel
         mainPanel.add(uraniumLogoLabel);
         mainPanel.add(loadingLabel);
         mainPanel.add(installButton);
         mainPanel.add(updateButton);
+        //tailles et couleurs
         mainPanel.setBackground(new Color(66, 69, 73));
         installButton.setBackground(new Color(35, 39, 42));
         updateButton.setBackground(new Color(35, 39, 42));
         updateButton.setForeground(new Color(255, 255, 255));
         installButton.setForeground(new Color(255, 255, 255));
         loadingLabel.setForeground(new Color(255, 255, 255));
-
         uraniumLogoLabel.setBounds(0, 0, 740, 416);
         updateButton.setBounds(270, 400, 160, 30);
         installButton.setBounds(210, 460, 290, 30);
         loadingLabel.setBounds(240, 520, 290, 30);
         loadingLabel.setFont(new Font(loadingLabel.getFont().getName(), Font.PLAIN, 20));
 
+
+        //update, comme install mais sans creation de profile
         updateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -52,7 +56,7 @@ public class MainMenu {
                         loadingLabel.setText("DOWNLOADING ...");
                         updateButton.setEnabled(false);
                         installButton.setEnabled(false);
-                        downloadZip.main();
+                        downloadZip.start();
                         return null;
                     }
 
@@ -68,6 +72,7 @@ public class MainMenu {
             }
         });
 
+        //installation
         installButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -80,7 +85,7 @@ public class MainMenu {
                         installButton.setEnabled(false);
                         updateButton.setEnabled(false);
                         addToLauncherProfile.main();
-                        downloadZip.main();
+                        downloadZip.start();
                         return null;
                     }
 
@@ -97,7 +102,7 @@ public class MainMenu {
         });
     }
 
-    public static void main() {
+    public static void start() {
         try {
             JFrame mainMenu = new JFrame("MainMenu");
             mainMenu.setContentPane(new MainMenu().mainPanel);

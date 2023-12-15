@@ -8,7 +8,7 @@ import java.util.zip.ZipInputStream;
 
 public class downloadZip {
 
-    public static void main() {
+    public static void start() {
         String zipUrl = "http://burning-cardboard.duckdns.org/assets_and_files_of_uranium.zip";
         String outputDirectory = minecraftFolder.pathToMinecraft();
 
