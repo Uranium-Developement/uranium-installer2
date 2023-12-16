@@ -1,11 +1,14 @@
 package fr.uranium;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 
 import static javax.swing.SwingUtilities.getWindowAncestor;
@@ -26,7 +29,7 @@ public class mainMenu {
         //creation des elements
         mainPanel = new JPanel();
         installButton = new JButton("Installer Uranium sur le launcher minecraft");
-        JLabel uraniumLogoLabel = new JLabel(new ImageIcon(new URL("https://cdn.discordapp.com/attachments/1150326378743463987/1183062569678807191/imageLauncher.png")));
+        JLabel uraniumLogoLabel = new JLabel(new ImageIcon(ImageIO.read(mainMenu.class.getResourceAsStream("/imageLauncher.png"))));
         updateButton = new JButton("mettre a jour Uranium");
         loadingLabel = new JLabel("");
         //taille fenetre
@@ -55,28 +58,8 @@ public class mainMenu {
             @Override
             public void actionPerformed(ActionEvent e) {
                 updateButton.setBackground(new Color(57, 175, 88));
-                SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
-                    @Override
-                    protected Void doInBackground() throws Exception {
-                        // Tâche de téléchargement
-                        loadingLabel.setText("DOWNLOADING ...");
-                        updateButton.setEnabled(false);
-                        installButton.setEnabled(false);
-                        getInstance().setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+                buttonPressed(false);
 
-                        downloadZip.start();
-                        return null;
-                    }
-
-                    @Override
-                    protected void done() {
-                        JFrame thisFrame = (JFrame) getWindowAncestor(updateButton);
-                        if (thisFrame != null) {
-                            thisFrame.dispose();
-                        }
-                    }
-                };
-                worker.execute();
             }
         });
 
@@ -85,33 +68,52 @@ public class mainMenu {
             @Override
             public void actionPerformed(ActionEvent e) {
                 installButton.setBackground(new Color(57, 175, 88));
-                SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
-                    @Override
-                    protected Void doInBackground() throws Exception {
-                        // Tâche de téléchargement
-                        getInstance().setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-                        loadingLabel.setText("DOWNLOADING ...");
-                        installButton.setEnabled(false);
-                        updateButton.setEnabled(false);
-                        addToLauncherProfile.main();
-                        downloadZip.start();
-                        return null;
-                    }
-
-                    @Override
-                    protected void done() {
-                        JFrame thisFrame = (JFrame) getWindowAncestor(installButton);
-                        if (thisFrame != null) {
-
-                            thisFrame.dispose();
-
-                        }
-                    }
-                };
-                worker.execute();
+                buttonPressed(true);
             }
         });
     }
+    public void buttonPressed(boolean createProfile){
+        SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                // Tâche de téléchargement
+                getInstance().setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+                loadingLabel.setText("DOWNLOADING ...");
+                installButton.setEnabled(false);
+                updateButton.setEnabled(false);
+                if (createProfile){addToLauncherProfile.main();}
+                addToLauncherProfile.main();
+                downloadZip.start();
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                JFrame thisFrame = (JFrame) getWindowAncestor(installButton);
+                if (thisFrame != null) {
+                    ProcessBuilder minecraftProcessBuilder = null;
+                    minecraftProcessBuilder = new ProcessBuilder("C:\\XboxGames\\Minecraft Launcher\\Content\\Minecraft.exe");
+
+
+                    if (Files.exists(FileSystems.getDefault().getPath("C:\\Program Files (x86)\\Minecraft Launcher\\MinecraftLauncher.exe"))){
+                        minecraftProcessBuilder = new ProcessBuilder("C:\\Program Files (x86)\\Minecraft Launcher\\MinecraftLauncher.exe");
+
+                    };
+
+                    try {
+                        assert minecraftProcessBuilder != null;
+                        Process minecraftProcess = minecraftProcessBuilder.start();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    thisFrame.dispose();
+
+
+                }
+            }
+        };
+        worker.execute();
+    };
 
     public static JFrame getInstance() {
         if (instance == null) {
@@ -124,12 +126,7 @@ public class mainMenu {
         try {
             JFrame mainMenu = getInstance();
             mainMenu.setContentPane(new mainMenu().mainPanel);
-            mainMenu.setIconImage(
-                new ImageIcon(
-                    new URL("https://cdn.discordapp.com/attachments/1148746446481391628/1182059252995588136/export202311240318235408_1.png")
-                ).getImage()
-            );
-
+            mainMenu.setIconImage(new ImageIcon(ImageIO.read(mainMenu.class.getResourceAsStream("/128uranium.png"))).getImage());
             mainMenu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             mainMenu.pack();
             mainMenu.setLocationRelativeTo(null);
