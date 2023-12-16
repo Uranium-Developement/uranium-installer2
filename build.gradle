@@ -9,6 +9,7 @@ version = '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 dependencies {
@@ -24,10 +25,10 @@ test {
 jar {
     manifest {
         attributes(
-                'Main-Class': 'fr.uranium.Main'
+                'Main-Class': 'fr.uranium.main'
         )
     }
 }
 application {
-    mainClassName = 'fr.uranium.Main'
+    mainClassName = 'fr.uranium.main'
 }

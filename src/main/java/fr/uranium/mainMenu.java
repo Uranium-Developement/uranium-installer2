@@ -6,16 +6,23 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 
-public class MainMenu {
+import static javax.swing.SwingUtilities.getWindowAncestor;
+
+public class mainMenu {
+
+    private static JFrame instance;
+
+
     private JPanel mainPanel;
     private JButton installButton;
-    private JLabel uraniumLogoLabel;
     private JButton updateButton;
     private JLabel loadingLabel;
 
-    public MainMenu() throws IOException {
+    private mainMenu() throws IOException {
         // Initialisation du mainPanel ici
+        //creation d'un buildeur de processus pour lancer minecraft avec les chemins les plus communs
         //creation des elements
         mainPanel = new JPanel();
         installButton = new JButton("Installer Uranium sur le launcher minecraft");
@@ -43,7 +50,6 @@ public class MainMenu {
         loadingLabel.setBounds(240, 520, 290, 30);
         loadingLabel.setFont(new Font(loadingLabel.getFont().getName(), Font.PLAIN, 20));
 
-
         //update, comme install mais sans creation de profile
         updateButton.addActionListener(new ActionListener() {
             @Override
@@ -56,13 +62,15 @@ public class MainMenu {
                         loadingLabel.setText("DOWNLOADING ...");
                         updateButton.setEnabled(false);
                         installButton.setEnabled(false);
+                        getInstance().setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+
                         downloadZip.start();
                         return null;
                     }
 
                     @Override
                     protected void done() {
-                        JFrame thisFrame = (JFrame) SwingUtilities.getWindowAncestor(updateButton);
+                        JFrame thisFrame = (JFrame) getWindowAncestor(updateButton);
                         if (thisFrame != null) {
                             thisFrame.dispose();
                         }
@@ -81,6 +89,7 @@ public class MainMenu {
                     @Override
                     protected Void doInBackground() throws Exception {
                         // Tâche de téléchargement
+                        getInstance().setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
                         loadingLabel.setText("DOWNLOADING ...");
                         installButton.setEnabled(false);
                         updateButton.setEnabled(false);
@@ -91,9 +100,11 @@ public class MainMenu {
 
                     @Override
                     protected void done() {
-                        JFrame thisFrame = (JFrame) SwingUtilities.getWindowAncestor(installButton);
+                        JFrame thisFrame = (JFrame) getWindowAncestor(installButton);
                         if (thisFrame != null) {
+
                             thisFrame.dispose();
+
                         }
                     }
                 };
@@ -102,10 +113,23 @@ public class MainMenu {
         });
     }
 
+    public static JFrame getInstance() {
+        if (instance == null) {
+            instance = new JFrame("Uranium Installer");
+        }
+        return instance;
+    }
+
     public static void start() {
         try {
-            JFrame mainMenu = new JFrame("MainMenu");
-            mainMenu.setContentPane(new MainMenu().mainPanel);
+            JFrame mainMenu = getInstance();
+            mainMenu.setContentPane(new mainMenu().mainPanel);
+            mainMenu.setIconImage(
+                new ImageIcon(
+                    new URL("https://cdn.discordapp.com/attachments/1148746446481391628/1182059252995588136/export202311240318235408_1.png")
+                ).getImage()
+            );
+
             mainMenu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             mainMenu.pack();
             mainMenu.setLocationRelativeTo(null);
