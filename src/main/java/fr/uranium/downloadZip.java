@@ -1,6 +1,7 @@
 package fr.uranium;
 
 import java.io.*;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.zip.ZipEntry;
@@ -36,6 +37,11 @@ public class downloadZip {
         }
 
         connection.disconnect();
+        supprimerDossier(new File(outputDirectory+"uranium"+System.getProperty("file.separator")+"mods"));
+        supprimerDossier(new File(outputDirectory+"uranium"+System.getProperty("file.separator")+"kubejs"));
+        supprimerDossier(new File(outputDirectory+"uranium"+System.getProperty("file.separator")+"fancymenu_data"));
+        supprimerDossier(new File(outputDirectory+"uranium"+System.getProperty("file.separator")+"fancymenu_setups"));
+
 
         // Step 2: Extraction du fichier zip
         try (ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(outputDirectory + "downloadedFile.zip"))) {
@@ -58,6 +64,33 @@ public class downloadZip {
 
                 zipInputStream.closeEntry();
             }
+        }catch (ConnectException e){
+
+        }
+    }
+    public static void supprimerDossier(File dossier) {
+        // Vérifiez si le dossier existe
+        if (dossier.exists()) {
+            // Liste des fichiers dans le dossier
+            File[] fichiers = dossier.listFiles();
+
+            // Supprimez tous les fichiers dans le dossier
+            if (fichiers != null) {
+                for (File fichier : fichiers) {
+                    if (fichier.isDirectory()) {
+                        // Appel récursif si le fichier est un sous-dossier
+                        supprimerDossier(fichier);
+                    } else {
+                        fichier.delete(); // Supprime le fichier
+                    }
+                }
+            }
+
+            // Supprimez le dossier lui-même une fois que tous les fichiers sont supprimés
+            dossier.delete();
+            System.out.println("Dossier supprimé avec succès.");
+        } else {
+            System.out.println("Le dossier spécifié n'existe pas.");
         }
     }
 }

@@ -6,10 +6,10 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Objects;
 
 import static javax.swing.SwingUtilities.getWindowAncestor;
 
@@ -18,10 +18,10 @@ public class mainMenu {
     private static JFrame instance;
 
 
-    private JPanel mainPanel;
-    private JButton installButton;
-    private JButton updateButton;
-    private JLabel loadingLabel;
+    private final JPanel mainPanel;
+    private final JButton installButton;
+    private final JButton updateButton;
+    private final JLabel loadingLabel;
 
     private mainMenu() throws IOException {
         // Initialisation du mainPanel ici
@@ -29,7 +29,7 @@ public class mainMenu {
         //creation des elements
         mainPanel = new JPanel();
         installButton = new JButton("Installer Uranium sur le launcher minecraft");
-        JLabel uraniumLogoLabel = new JLabel(new ImageIcon(ImageIO.read(mainMenu.class.getResourceAsStream("/imageLauncher.png"))));
+        JLabel uraniumLogoLabel = new JLabel(new ImageIcon(ImageIO.read(Objects.requireNonNull(mainMenu.class.getResourceAsStream("/imageLauncher.png")))));
         updateButton = new JButton("mettre a jour Uranium");
         loadingLabel = new JLabel("");
         //taille fenetre
@@ -72,7 +72,8 @@ public class mainMenu {
             }
         });
     }
-    public void buttonPressed(boolean createProfile){
+
+    public void buttonPressed(boolean createProfile) {
         SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() throws Exception {
@@ -81,8 +82,9 @@ public class mainMenu {
                 loadingLabel.setText("DOWNLOADING ...");
                 installButton.setEnabled(false);
                 updateButton.setEnabled(false);
-                if (createProfile){addToLauncherProfile.main();}
-                addToLauncherProfile.main();
+                if (createProfile) {
+                    addToLauncherProfile.start();
+                }
                 downloadZip.start();
                 return null;
             }
@@ -90,31 +92,27 @@ public class mainMenu {
             @Override
             protected void done() {
                 JFrame thisFrame = (JFrame) getWindowAncestor(installButton);
-                if (thisFrame != null) {
-                    ProcessBuilder minecraftProcessBuilder = null;
-                    minecraftProcessBuilder = new ProcessBuilder("C:\\XboxGames\\Minecraft Launcher\\Content\\Minecraft.exe");
+                if (thisFrame == null) return;
 
 
-                    if (Files.exists(FileSystems.getDefault().getPath("C:\\Program Files (x86)\\Minecraft Launcher\\MinecraftLauncher.exe"))){
-                        minecraftProcessBuilder = new ProcessBuilder("C:\\Program Files (x86)\\Minecraft Launcher\\MinecraftLauncher.exe");
-
-                    };
-
-                    try {
-                        assert minecraftProcessBuilder != null;
-                        Process minecraftProcess = minecraftProcessBuilder.start();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                    thisFrame.dispose();
+                ProcessBuilder minecraftProcessBuilder = new ProcessBuilder("C:\\XboxGames\\Minecraft Launcher\\Content\\Minecraft.exe");
 
 
+                try {
+                    minecraftProcessBuilder.start();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
+
+                thisFrame.dispose();
             }
         };
         worker.execute();
-    };
+    }
 
+    /**
+     * @return l'instance de la fenêtre
+     */
     public static JFrame getInstance() {
         if (instance == null) {
             instance = new JFrame("Uranium Installer");
@@ -122,17 +120,19 @@ public class mainMenu {
         return instance;
     }
 
+    /**
+     * Instancie et affiche la fenêtre
+     */
     public static void start() {
         try {
             JFrame mainMenu = getInstance();
             mainMenu.setContentPane(new mainMenu().mainPanel);
-            mainMenu.setIconImage(new ImageIcon(ImageIO.read(mainMenu.class.getResourceAsStream("/128uranium.png"))).getImage());
+            mainMenu.setIconImage(new ImageIcon(ImageIO.read(Objects.requireNonNull(mainMenu.class.getResourceAsStream("/128uranium.png")))).getImage());
             mainMenu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             mainMenu.pack();
             mainMenu.setLocationRelativeTo(null);
             mainMenu.setVisible(true);
             mainMenu.setResizable(false);
-
         } catch (Exception e) {
             e.printStackTrace();
         }

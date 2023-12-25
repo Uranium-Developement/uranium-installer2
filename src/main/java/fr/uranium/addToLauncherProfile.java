@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public class addToLauncherProfile {
 
-    public static void main() {
+    public static void start() {
         // Chemin du fichier
         String cheminFichier = minecraftFolder.pathToMinecraft() +System.getProperty("file.separator") +"launcher_profiles.json";
 
