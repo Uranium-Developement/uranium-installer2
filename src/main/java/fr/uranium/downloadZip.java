@@ -10,7 +10,7 @@ import java.util.zip.ZipInputStream;
 public class downloadZip {
 
     public static void start() {
-        String zipUrl = "http://burning-cardboard.duckdns.org/assets_and_files_of_uranium.zip";
+        String zipUrl = "http://burning-cardboard.fr/assets_and_files_of_tfc.zip";
         String outputDirectory = minecraftFolder.pathToMinecraft();
 
         try {
@@ -37,10 +37,10 @@ public class downloadZip {
         }
 
         connection.disconnect();
-        supprimerDossier(new File(outputDirectory+"uranium"+System.getProperty("file.separator")+"mods"));
-        supprimerDossier(new File(outputDirectory+"uranium"+System.getProperty("file.separator")+"kubejs"));
-        supprimerDossier(new File(outputDirectory+"uranium"+System.getProperty("file.separator")+"fancymenu_data"));
-        supprimerDossier(new File(outputDirectory+"uranium"+System.getProperty("file.separator")+"fancymenu_setups"));
+        supprimerDossier(new File(outputDirectory+"tfc"+System.getProperty("file.separator")+"mods"));
+        supprimerDossier(new File(outputDirectory+"tfc"+System.getProperty("file.separator")+"kubejs"));
+        supprimerDossier(new File(outputDirectory+"tfc"+System.getProperty("file.separator")+"fancymenu_data"));
+        supprimerDossier(new File(outputDirectory+"tfc"+System.getProperty("file.separator")+"fancymenu_setups"));
 
 
         // Step 2: Extraction du fichier zip

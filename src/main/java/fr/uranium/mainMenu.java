@@ -28,9 +28,9 @@ public class mainMenu {
         //creation d'un buildeur de processus pour lancer minecraft avec les chemins les plus communs
         //creation des elements
         mainPanel = new JPanel();
-        installButton = new JButton("Installer Uranium sur le launcher minecraft");
-        JLabel uraniumLogoLabel = new JLabel(new ImageIcon(ImageIO.read(Objects.requireNonNull(mainMenu.class.getResourceAsStream("/imageLauncher.png")))));
-        updateButton = new JButton("mettre a jour Uranium");
+        installButton = new JButton("Installer TERRAFIRMACRAFT sur le launcher minecraft");
+        JLabel uraniumLogoLabel = new JLabel(new ImageIcon(ImageIO.read(Objects.requireNonNull(mainMenu.class.getResourceAsStream("/imageLauncher.jpg")))));
+        updateButton = new JButton("mettre a jour TERRAFIRMACRAFT");
         loadingLabel = new JLabel("");
         //taille fenetre
         mainPanel.setPreferredSize(new Dimension(730, 600));
